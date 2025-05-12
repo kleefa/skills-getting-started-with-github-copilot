@@ -51,10 +51,10 @@ def root():
 def get_activities():
     return activities
 
-
-@app.post("/activities/{activity_name}/signup")
-def signup_for_activity(activity_name: str, email: str):
-    """Sign up a student for an activity"""
+# Validate student is not already signed up
+@app.get("/activities/{activity_name}")
+def get_activity(activity_name: str):
+    """Get details of a specific activity"""
     # Validate activity exists
     if activity_name not in activities:
         raise HTTPException(status_code=404, detail="Activity not found")
@@ -62,6 +62,15 @@ def signup_for_activity(activity_name: str, email: str):
     # Get the specificy activity
     activity = activities[activity_name]
 
-    # Add student
-    activity["participants"].append(email)
-    return {"message": f"Signed up {email} for {activity_name}"}
+    # Check if student is already signed up
+    email = "   "  # Placeholder for student email
+    if email in activity["participants"]:
+        return {"message": f"You are already signed up for {activity_name}"}
+    else:
+        return {
+            "description": activity["description"],
+            "schedule": activity["schedule"],
+            "max_participants": activity["max_participants"],
+            "participants": activity["participants"]
+        }   
+
