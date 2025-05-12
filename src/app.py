@@ -49,7 +49,17 @@ def root():
 
 @app.get("/activities")
 def get_activities():
-    return activities
+    """Get all activities with participants included."""
+    # Add participants to the response for each activity
+    return {
+        activity_name: {
+            "description": details["description"],
+            "schedule": details["schedule"],
+            "max_participants": details["max_participants"],
+            "participants": details["participants"]
+        }
+        for activity_name, details in activities.items()
+    }
 
 # Validate student is not already signed up
 @app.get("/activities/{activity_name}")
@@ -72,5 +82,5 @@ def get_activity(activity_name: str):
             "schedule": activity["schedule"],
             "max_participants": activity["max_participants"],
             "participants": activity["participants"]
-        }   
+        }
 
