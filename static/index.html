@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mergington High School Activities</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .activity-card {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .activity-card h2 {
+            margin-top: 0;
+        }
+        .participants {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Extracurricular Activities</h1>
+    <div id="activities">
+        <!-- Activities will be dynamically loaded here -->
+    </div>
+    <script>
+        async function loadActivities() {
+            const response = await fetch('/activities');
+            const activities = await response.json();
+
+            const activitiesContainer = document.getElementById('activities');
+            activitiesContainer.innerHTML = '';
+
+            for (const [name, details] of Object.entries(activities)) {
+                const card = document.createElement('div');
+                card.className = 'activity-card';
+
+                card.innerHTML = `
+                    <h2>${name}</h2>
+                    <p><strong>Description:</strong> ${details.description}</p>
+                    <p><strong>Schedule:</strong> ${details.schedule}</p>
+                    <p><strong>Max Participants:</strong> ${details.max_participants}</p>
+                    <div class="participants">
+                        <strong>Participants:</strong>
+                        <ul>
+                            ${details.participants.map(participant => `<li>${participant}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+
+                activitiesContainer.appendChild(card);
+            }
+        }
+
+        loadActivities();
+    </script>
+</body>
+</html>
